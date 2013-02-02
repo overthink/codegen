@@ -41,7 +41,7 @@
   "Generate an implementation for a single property of a class."
   [prefix pname ptype]
   (let [fn-name (symbol (name pname))]
-    `(defn ~fn-name [~'this] (~'.state ~pname))))
+    `(defn ~fn-name [~'this] (~'.state ~'this ~pname))))
 
 (defn gen-class-impl
   "Return code that implements all the props and constructors for cls."
@@ -55,7 +55,7 @@
                                         (symbol (fq (name type-name)))
                                         (symbol (name type-name))))
         ;; Just one constructor to which a value for each prop is passed
-        ctor-params (->> props (vals) (map type-symbol))
+        ctor-types (->> props (vals) (map type-symbol))
         init-fn (symbol (str fq-class-name "-init"))
         methods (vec
                   (for [[k v] props]
@@ -66,15 +66,16 @@
        ;; First generate the impls of each property
        ~@(for [[pname ptype] props]
            (gen-prop-impl prefix pname ptype))
-       ;; Next generate the init/ctor function
-       (defn ~init-fn [& ~'more] nil)
+       ;; Next generate the init/ctor function, returns value for state
+       (defn ~init-fn [& ~'ctor-args]
+         [[] (zipmap ~(keys props) ~'ctor-args)])
        ;; Then emit the gen-class call to save .class files when compiled
        (gen-class
          :name ~fq-class-name
          :prefix ~prefix
          :state "state"
          :init ~init-fn
-         :constructors {~ctor-params []}
+         :constructors {~ctor-types []}
          :methods ~methods))))
 
 (defmacro gen-classes

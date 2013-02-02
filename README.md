@@ -51,6 +51,10 @@ public class com.example.gen.Person extends java.lang.Object{
 }
 ```
 
+## Status
+
+Experiment.  Not working yet.
+
 ## Usage
 
 * `lein compile`
