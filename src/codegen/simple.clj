@@ -11,8 +11,8 @@
 (defmacro getter 
   "Define a simple 'getter' fn for the given keyword."
   [x]
-  `(defn ~(symbol (format "com.example.simple.Foo-%s" (name x))) [~'this]
-    (~(keyword x) (.state ~'this))))
+  `(defn ~(symbol (format "com.example.simple.Foo-%s" (name x))) [this#]
+    (~(keyword x) (.state this#))))
 
 (getter :first)
 (getter :second)

@@ -41,7 +41,7 @@
   "Generate an implementation for a single property of a class."
   [prefix pname ptype]
   (let [fn-name (symbol (name pname))]
-    `(defn ~fn-name [~'this] (~'.state ~'this ~pname))))
+    `(defn ~fn-name [this#] (~'.state this# ~pname))))
 
 (defn gen-class-impl
   "Return code that implements all the props and constructors for cls."
@@ -91,6 +91,6 @@
 
 (comment
   (walk/macroexpand-all '(gen-classes))
-  (macroexpand-1 '(gen-classes))
+  (pprint (macroexpand-1 '(gen-classes)))
 )
 
